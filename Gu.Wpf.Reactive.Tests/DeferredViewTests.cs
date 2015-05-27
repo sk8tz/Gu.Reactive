@@ -8,12 +8,13 @@
     using System.Threading.Tasks;
     using NUnit.Framework;
 
-    public class DeferredCollectionTests
+    public class DeferredViewTests
     {
         private ObservableCollection<int> _source;
         private TimeSpan _deferTime;
         private DeferredView<int> _deferredView;
         private readonly List<NotifyCollectionChangedEventArgs> _changes = new List<NotifyCollectionChangedEventArgs>();
+        
         [SetUp]
         public void SetUp()
         {
@@ -52,7 +53,7 @@
             {
                 _source.Add(i);
             }
-            await Task.Delay(20);
+            await Task.Delay(40);
             for (int i = 0; i < 10; i++)
             {
                 _source.Add(i);

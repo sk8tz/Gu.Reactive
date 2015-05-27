@@ -88,6 +88,8 @@
   <ItemGroup>
     <Compile Include="Converters\TypeConverters\ITypeConverter`1.cs" />
     <Compile Include="Converters\TypeConverters\NullableEnumConverter`1.cs" />
+    <Compile Include="DispatchingView`1.cs" />
+    <Compile Include="ObservableCollectionWrapperBase`1.cs" />
     <Compile Include="ServiceProviderExt.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\BooleanToXConverter.cs" />

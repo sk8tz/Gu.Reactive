@@ -5,13 +5,21 @@
 
     public sealed class RwLock : IDisposable
     {
-        private readonly ReaderWriterLockSlim _innerLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        private readonly ReaderWriterLockSlim _innerLock;
         private bool _disposed = false;
 
-        //public RwLock(LockRecursionPolicy recursionPolicy)
-        //{
-        //    _innerLock = new ReaderWriterLockSlim(recursionPolicy);
-        //}
+        /// <summary>
+        /// Creates a RwLock with LockRecursionPolicy.NoRecursion
+        /// </summary>
+        public RwLock()
+            : this(LockRecursionPolicy.NoRecursion)
+        {
+        }
+
+        public RwLock(LockRecursionPolicy recursionPolicy)
+        {
+            _innerLock = new ReaderWriterLockSlim(recursionPolicy);
+        }
 
         public IDisposable Read()
         {
@@ -33,11 +41,22 @@
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (_disposed)
             {
-                _disposed = true;
-                _innerLock.Dispose();
+                return;
             }
+            _disposed = true;
+            _innerLock.Dispose();
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "RwLock RecursionPolicy: {0}, IsReadLockHeld:{1}, IsWriteLockHeld: {2}, IsUpgradeableReadLockHeld: {3}",
+                _innerLock.RecursionPolicy,
+                _innerLock.IsReadLockHeld,
+                _innerLock.IsWriteLockHeld,
+                _innerLock.IsUpgradeableReadLockHeld);
         }
 
         private void VerifyDisposed()
@@ -59,7 +78,21 @@
 
             public void Dispose()
             {
+                if (!_rwLock.IsReadLockHeld)
+                {
+                    return;
+                }
                 _rwLock.ExitReadLock();
+            }
+
+            public override string ToString()
+            {
+                return string.Format(
+                    "RwLock.Writer RecursionPolicy: {0}, IsReadLockHeld:{1}, IsWriteLockHeld: {2}, IsUpgradeableReadLockHeld: {3}",
+                    _rwLock.RecursionPolicy,
+                    _rwLock.IsReadLockHeld,
+                    _rwLock.IsWriteLockHeld,
+                    _rwLock.IsUpgradeableReadLockHeld);
             }
         }
 
@@ -74,7 +107,21 @@
 
             public void Dispose()
             {
+                if (!_rwLock.IsUpgradeableReadLockHeld)
+                {
+                    return;
+                }
                 _rwLock.ExitUpgradeableReadLock();
+            }
+
+            public override string ToString()
+            {
+                return string.Format(
+                    "RwLock.Writer RecursionPolicy: {0}, IsReadLockHeld:{1}, IsWriteLockHeld: {2}, IsUpgradeableReadLockHeld: {3}",
+                    _rwLock.RecursionPolicy,
+                    _rwLock.IsReadLockHeld,
+                    _rwLock.IsWriteLockHeld,
+                    _rwLock.IsUpgradeableReadLockHeld);
             }
         }
 
@@ -89,7 +136,21 @@
 
             public void Dispose()
             {
+                if (!_rwLock.IsWriteLockHeld)
+                {
+                    return;
+                }
                 _rwLock.ExitWriteLock();
+            }
+
+            public override string ToString()
+            {
+                return string.Format(
+                    "RwLock.Writer RecursionPolicy: {0}, IsReadLockHeld:{1}, IsWriteLockHeld: {2}, IsUpgradeableReadLockHeld: {3}",
+                    _rwLock.RecursionPolicy,
+                    _rwLock.IsReadLockHeld,
+                    _rwLock.IsWriteLockHeld,
+                    _rwLock.IsUpgradeableReadLockHeld);
             }
         }
     }

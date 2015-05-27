@@ -1,35 +1,37 @@
 ﻿namespace Gu.Wpf.Reactive
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Linq;
     using System.Reactive.Linq;
-    using System.Runtime.CompilerServices;
+    using System.Threading;
 
-    using Gu.Reactive.Annotations;
+    using Gu.Reactive;
+    using Gu.Reactive.Internals;
 
-    public class DeferredView<T> : ICollection<T>, IList, INotifyCollectionChanged, INotifyPropertyChanged, IDisposable
+    public class DeferredView<T> : ObservableCollectionWrapperBase<ObservableCollection<T>, T>, IDisposable
     {
-        private readonly ObservableCollection<T> _inner;
-        private IDisposable _changeSubscription;
-        private bool _disposed = false;
-
+        private readonly object _eventsLock = new object();
+        private readonly List<NotifyCollectionChangedEventArgs> _collectionChangedArgs = new List<NotifyCollectionChangedEventArgs>();
+        private readonly List<PropertyChangedEventArgs> _countChangedArgs = new List<PropertyChangedEventArgs>();
+        private readonly List<PropertyChangedEventArgs> _indexerChangedArgs = new List<PropertyChangedEventArgs>();
         private TimeSpan _deferTime;
+        private bool _disposed = false;
+        private IDisposable _timerSubscription;
 
         public DeferredView(ObservableCollection<T> inner, TimeSpan deferTime)
+            : base(inner)
         {
-            _inner = inner;
             _deferTime = deferTime;
-            UpdateSubscription(deferTime);
+            this.ObservePropertyChanged(x => x.DeferTime, false)
+                .Subscribe(_ => ResetTimer());
+            InnerCollectionChangedObservable.Subscribe(x => AddArgs(_collectionChangedArgs, x.EventArgs));
+            InnerCountChangedObservable.Subscribe(x => AddArgs(_countChangedArgs, x.EventArgs));
+            InnerIndexerChangedObservable.Subscribe(x => AddArgs(_indexerChangedArgs, x.EventArgs));
         }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public TimeSpan DeferTime
         {
@@ -45,133 +47,8 @@
                 }
                 _deferTime = value;
                 OnPropertyChanged();
-                UpdateSubscription(_deferTime);
             }
         }
-
-        #region ICollection<T>
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _inner.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(T item)
-        {
-            _inner.Add(item);
-        }
-
-        public void Clear()
-        {
-            _inner.Clear();
-        }
-
-        public bool Contains(T item)
-        {
-            return _inner.Contains(item);
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            _inner.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(T item)
-        {
-            return _inner.Remove(item);
-        }
-
-        public int Count
-        {
-            get { return _inner.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        #endregion  ICollection<T>
-
-        #region IList
-
-        int IList.Add(object value)
-        {
-            return ((IList)_inner).Add(value);
-        }
-
-        void IList.Clear()
-        {
-            ((IList)_inner).Clear();
-        }
-
-        bool IList.Contains(object value)
-        {
-            return ((IList)_inner).Contains(value);
-        }
-
-        int IList.IndexOf(object value)
-        {
-            return ((IList)_inner).IndexOf(value);
-        }
-
-        void IList.Insert(int index, object value)
-        {
-            ((IList)_inner).Insert(index, value);
-        }
-
-        bool IList.IsFixedSize
-        {
-            get { return ((IList)_inner).IsFixedSize; }
-        }
-
-        bool IList.IsReadOnly
-        {
-            get { return ((IList)_inner).IsReadOnly; }
-        }
-
-        void IList.Remove(object value)
-        {
-            ((IList)_inner).Remove(value);
-        }
-
-        void IList.RemoveAt(int index)
-        {
-            ((IList)_inner).RemoveAt(index);
-        }
-
-        object IList.this[int index]
-        {
-            get { return ((IList)_inner)[index]; }
-            set { ((IList)_inner)[index] = value; }
-        }
-
-        void ICollection.CopyTo(Array array, int index)
-        {
-            ((IList)_inner).CopyTo(array, index);
-        }
-
-        int ICollection.Count
-        {
-            get { return ((IList)_inner).Count; }
-        }
-
-        bool ICollection.IsSynchronized
-        {
-            get { return ((IList)_inner).IsSynchronized; }
-        }
-
-        object ICollection.SyncRoot
-        {
-            get { return ((IList)_inner).SyncRoot; }
-        }
-
-        #endregion IList
 
         /// <summary>
         /// Dispose(true); //I am calling you from Dispose, it's safe
@@ -181,6 +58,13 @@
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public override int Add(object value)
+        {
+            var i = base.Add(value);
+            Notify();
+            return i;
         }
 
         /// <summary>
@@ -193,87 +77,97 @@
             {
                 return;
             }
-
+            _disposed = true;
             if (disposing)
             {
-                if (_changeSubscription != null)
+                lock (_eventsLock)
                 {
-                    _changeSubscription.Dispose();
+                    if (_timerSubscription != null)
+                    {
+                        _timerSubscription.Dispose();
+                    }
                 }
-                // Free any other managed objects here. 
             }
-
-            // Free any unmanaged objects here. 
-            _disposed = true;
         }
 
-        protected virtual void OnCollectionChanged(IEnumerable<NotifyCollectionChangedEventArgs> es)
+        protected void VerifyDisposed()
         {
-            int count = 0;
-            foreach (var _ in es)
+            if (_disposed)
             {
-                count++;
-                if (count > 1)
+                throw new ObjectDisposedException(GetType().FullName);
+            }
+        }
+
+        private void AddArgs<TArgs>(List<TArgs> col, TArgs eventArgs) where TArgs : EventArgs
+        {
+            lock (_eventsLock)
+            {
+                if (_timerSubscription != null)
                 {
-                    break;
+                    _timerSubscription.Dispose();
+                }
+                _timerSubscription = Observable.Timer(DeferTime)
+                                               .Subscribe(_ => Notify());
+                col.Add(eventArgs);
+            }
+        }
+
+        private void ResetTimer()
+        {
+            lock (_eventsLock)
+            {
+                if (_timerSubscription != null)
+                {
+                    _timerSubscription.Dispose();
+                }
+                _timerSubscription = Observable.Timer(DeferTime)
+                                               .Subscribe(_ => Notify());
+            }
+        }
+
+        private void Notify()
+        {
+            VerifyDisposed();
+            lock (_eventsLock)
+            {
+                if (_timerSubscription != null)
+                {
+                    _timerSubscription.Dispose();
+                }
+
+                if (_countChangedArgs.Any())
+                {
+                    OnPropertyChanged(CountEventArgs);
+                    _countChangedArgs.Clear();
+                }
+
+                if (_indexerChangedArgs.Any())
+                {
+                    OnPropertyChanged(IndexerEventArgs);
+                    _indexerChangedArgs.Clear();
+                }
+
+                if (_collectionChangedArgs.Any())
+                {
+                    OnCollectionChanged(_collectionChangedArgs);
+                    _collectionChangedArgs.Clear();
                 }
             }
-            if (count == 0)
+        }
+
+        private void OnCollectionChanged(IReadOnlyList<NotifyCollectionChangedEventArgs> es)
+        {
+            if (es == null || es.Count == 0)
             {
                 return;
             }
-            if (count == 1)
+            if (es.Count == 1)
             {
-                OnCollectionChanged(es.Single());
+                OnCollectionChanged(es[0]);
             }
             else
             {
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            }
-        }
-
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged("Count");
-            OnPropertyChanged("Item[]");
-            var handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        private void UpdateSubscription(TimeSpan deferTime)
-        {
-            if (_changeSubscription != null)
-            {
-                _changeSubscription.Dispose();
-            }
-            var colChanges =
-                Observable.FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
-                    h => _inner.CollectionChanged += h,
-                    h => _inner.CollectionChanged -= h);
-
-            if (_deferTime > TimeSpan.Zero)
-            {
-                _changeSubscription = colChanges.Buffer(colChanges.Throttle(deferTime))
-                                                .ObserveOnDispatcherOrCurrentThread()
-                                                .Subscribe(x => OnCollectionChanged(x.Select(ep => ep.EventArgs)));
-            }
-            else
-            {
-                _changeSubscription = colChanges.ObserveOnDispatcherOrCurrentThread()
-                                                .Subscribe(x => OnCollectionChanged(x.EventArgs));
+                OnCollectionChanged(ResetEventArgs);
             }
         }
     }
