@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
+    using Gu.Reactive;
     using NUnit.Framework;
 
     public class DeferredViewTests
@@ -14,7 +16,7 @@
         private TimeSpan _deferTime;
         private DeferredView<int> _deferredView;
         private readonly List<NotifyCollectionChangedEventArgs> _changes = new List<NotifyCollectionChangedEventArgs>();
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -22,6 +24,60 @@
             _deferTime = TimeSpan.FromMilliseconds(10);
             _deferredView = new DeferredView<int>(_source, _deferTime);
             _changes.Clear();
+        }
+
+        [Test]
+        public async Task ViewSignalsSameAsCollectionWhenCollectionIsChanged()
+        {
+            var collectionChanges = new List<EventArgs>();
+            var viewChanges = new List<EventArgs>();
+            var ints = new ObservableCollection<int>();
+            ints.ObservePropertyChanged().Subscribe(x => collectionChanges.Add(x.EventArgs));
+            ints.ObserveCollectionChanged().Subscribe(x => collectionChanges.Add(x.EventArgs));
+            var view = new DeferredView<int>(ints, TimeSpan.FromMilliseconds(10));
+            view.ObservePropertyChanged().Subscribe(x => viewChanges.Add(x.EventArgs));
+            view.ObserveCollectionChanged().Subscribe(x => viewChanges.Add(x.EventArgs));
+            ints.Add(1);
+            await Task.Delay(20);
+            CollectionAssert.AreEqual(ints, view);
+            CollectionAssert.AreEqual(collectionChanges, viewChanges, new EventArgsComparer());
+        }
+
+        [Test]
+        public void BenchMark()
+        {
+            var ints = new ObservableCollection<int>();
+            var view = new DeferredView<int>(ints, TimeSpan.FromMilliseconds(10));
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < 1000; i++)
+            {
+                ints.Add(i);
+            }
+            Console.WriteLine("adding 1000 took: {0} ms", sw.ElapsedMilliseconds);
+
+            sw.Restart();
+            for (int i = 0; i < 1000; i++)
+            {
+                view.Add(i);
+            }
+            Console.WriteLine("adding 1000 took: {0} ms", sw.ElapsedMilliseconds);
+        }
+
+        [Test]
+        public async Task ViewSignalsSameAsCollectionWhenViewIsChanged()
+        {
+            var collectionChanges = new List<EventArgs>();
+            var viewChanges = new List<EventArgs>();
+            var ints = new ObservableCollection<int>();
+            ints.ObservePropertyChanged().Subscribe(x => collectionChanges.Add(x.EventArgs));
+            ints.ObserveCollectionChanged().Subscribe(x => collectionChanges.Add(x.EventArgs));
+            var view = new DeferredView<int>(ints, TimeSpan.FromMilliseconds(10));
+            view.ObservePropertyChanged().Subscribe(x => viewChanges.Add(x.EventArgs));
+            view.ObserveCollectionChanged().Subscribe(x => viewChanges.Add(x.EventArgs));
+            view.Add(1);
+            await Task.Delay(20);
+            CollectionAssert.AreEqual(ints, view);
+            CollectionAssert.AreEqual(collectionChanges, viewChanges, new EventArgsComparer());
         }
 
         [Test]

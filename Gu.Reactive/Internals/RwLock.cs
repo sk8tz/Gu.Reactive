@@ -5,7 +5,7 @@
 
     public sealed class RwLock : IDisposable
     {
-        private readonly ReaderWriterLockSlim _innerLock;
+        public readonly ReaderWriterLockSlim InnerLock;
         private bool _disposed = false;
 
         /// <summary>
@@ -18,25 +18,25 @@
 
         public RwLock(LockRecursionPolicy recursionPolicy)
         {
-            _innerLock = new ReaderWriterLockSlim(recursionPolicy);
+            InnerLock = new ReaderWriterLockSlim(recursionPolicy);
         }
 
         public IDisposable Read()
         {
             VerifyDisposed();
-            return new Reader(_innerLock);
+            return new Reader(InnerLock);
         }
 
         public IDisposable UpgradeableRead()
         {
             VerifyDisposed();
-            return new UpgradeableReader(_innerLock);
+            return new UpgradeableReader(InnerLock);
         }
 
         public IDisposable Write()
         {
             VerifyDisposed();
-            return new Writer(_innerLock);
+            return new Writer(InnerLock);
         }
 
         public void Dispose()
@@ -46,17 +46,17 @@
                 return;
             }
             _disposed = true;
-            _innerLock.Dispose();
+            InnerLock.Dispose();
         }
 
         public override string ToString()
         {
             return string.Format(
                 "RwLock RecursionPolicy: {0}, IsReadLockHeld:{1}, IsWriteLockHeld: {2}, IsUpgradeableReadLockHeld: {3}",
-                _innerLock.RecursionPolicy,
-                _innerLock.IsReadLockHeld,
-                _innerLock.IsWriteLockHeld,
-                _innerLock.IsUpgradeableReadLockHeld);
+                InnerLock.RecursionPolicy,
+                InnerLock.IsReadLockHeld,
+                InnerLock.IsWriteLockHeld,
+                InnerLock.IsUpgradeableReadLockHeld);
         }
 
         private void VerifyDisposed()

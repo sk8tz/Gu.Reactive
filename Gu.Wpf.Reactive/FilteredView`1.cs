@@ -7,7 +7,6 @@
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Linq;
-    using System.Reactive;
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
@@ -34,7 +33,6 @@
         private Func<T, bool> _filter;
         private bool _disposed = false;
         private TimeSpan _deferTime;
-
 
         /// <summary>
         /// For manual Refresh()

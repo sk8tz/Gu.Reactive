@@ -16,7 +16,7 @@
 
         public DeferredViewViewModel()
         {
-            DeferTime = TimeSpan.FromSeconds(0.1);
+            DeferTime = TimeSpan.FromMilliseconds(10);
             Add(3);
             ReadOnlyObservableCollection = new ReadOnlyObservableCollection<DummyItem>(_observableCollection);
             ObservableCollectionDeferredView = new DeferredView<DummyItem>(_observableCollection, DeferTime);

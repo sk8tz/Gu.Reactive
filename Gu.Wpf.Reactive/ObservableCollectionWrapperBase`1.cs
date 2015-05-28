@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -27,14 +26,11 @@
         protected static readonly PropertyChangedEventArgs IndexerEventArgs = new PropertyChangedEventArgs(IndexerName);
 
         private readonly TCollection _inner;
-        private readonly RwLock _collectionLock = new RwLock(LockRecursionPolicy.SupportsRecursion);
-        private readonly ConcurrentQueue<IDisposable> _writeLocks = new ConcurrentQueue<IDisposable>();
 
         public ObservableCollectionWrapperBase(TCollection inner)
         {
             _inner = inner;
             InnerCollectionChangedObservable = inner.ObserveCollectionChanged(false);
-            InnerCollectionChangedObservable.Subscribe(_ => _writeLocks.Enqueue(_collectionLock.Write()));
             InnerCountChangedObservable = inner.ObservePropertyChanged(CountName, false);
             InnerIndexerChangedObservable = inner.ObservePropertyChanged(IndexerName, false);
         }
@@ -57,10 +53,7 @@
         {
             get
             {
-                using (var read = _collectionLock.Read())
-                {
-                    return _inner.Count;
-                }
+                return _inner.Count;
             }
         }
 
@@ -73,20 +66,14 @@
         {
             get
             {
-                using (var read = _collectionLock.Read())
-                {
-                    return _inner[index];
-                }
+                return _inner[index];
             }
             set { SetItem(index, value); }
         }
 
         public IEnumerator<TItem> GetEnumerator()
         {
-            using (var read = _collectionLock.Read())
-            {
-                return _inner.GetEnumerator();
-            }
+            return _inner.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -106,18 +93,12 @@
 
         public bool Contains(TItem item)
         {
-            using (var read = _collectionLock.Read())
-            {
-                return _inner.Contains(item);
-            }
+            return _inner.Contains(item);
         }
 
         public int IndexOf(TItem value)
         {
-            using (var read = _collectionLock.Read())
-            {
-                return _inner.IndexOf(value);
-            }
+            return _inner.IndexOf(value);
         }
 
         public void Insert(int index, TItem value)
@@ -154,10 +135,7 @@
         {
             get
             {
-                using (var read = _collectionLock.Read())
-                {
-                    return _inner[index];
-                }
+                return _inner[index];
             }
             set { SetItem(index, (TItem)value); }
         }
@@ -199,10 +177,7 @@
 
         void ICollection.CopyTo(Array array, int index)
         {
-            using (var read = _collectionLock.Read())
-            {
-                ((IList)_inner).CopyTo(array, index);
-            }
+            ((IList)_inner).CopyTo(array, index);
         }
 
         bool ICollection.IsSynchronized
@@ -276,26 +251,18 @@
             var handler = CollectionChanged;
             if (handler != null)
             {
-                IDisposable writeLock;
-                while (_writeLocks.TryDequeue(out writeLock))
+                var invocationList = handler.GetInvocationList().OfType<NotifyCollectionChangedEventHandler>();
+                foreach (var invocation in invocationList)
                 {
-                    writeLock.Dispose();
-                }
-                using (var read = _collectionLock.Read())
-                {
-                    var invocationList = handler.GetInvocationList().OfType<NotifyCollectionChangedEventHandler>();
-                    foreach (var invocation in invocationList)
-                    {
-                        var dispatcherObject = invocation.Target as DispatcherObject;
+                    var dispatcherObject = invocation.Target as DispatcherObject;
 
-                        if (dispatcherObject != null && !dispatcherObject.CheckAccess())
-                        {
-                            dispatcherObject.Dispatcher.Invoke(DispatcherPriority.DataBind, invocation, this, e);
-                        }
-                        else
-                        {
-                            invocation(this, e); // note : this does not execute invocation in target thread's context
-                        }
+                    if (dispatcherObject != null && !dispatcherObject.CheckAccess())
+                    {
+                        dispatcherObject.Dispatcher.Invoke(DispatcherPriority.DataBind, invocation, this, e);
+                    }
+                    else
+                    {
+                        invocation(this, e); // note : this does not execute invocation in target thread's context
                     }
                 }
             }
