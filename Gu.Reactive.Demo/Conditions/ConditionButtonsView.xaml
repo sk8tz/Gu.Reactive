@@ -47,7 +47,7 @@
                     Content="Start"
                     Style="{StaticResource ButtonWithCommandToolTipStyle}" />
             <Button Command="{Binding StopCommand}"
-                    Content="STop"
+                    Content="Stop"
                     Style="{StaticResource ButtonWithCommandToolTipStyle}" />
         </StackPanel>
     </AdornerDecorator>

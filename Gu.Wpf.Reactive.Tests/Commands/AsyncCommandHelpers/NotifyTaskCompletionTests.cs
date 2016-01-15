@@ -23,7 +23,7 @@
             var task = tcs.Task;
             var completion = new NotifyTaskCompletion<int>(task);
             tcs.SetResult(1);
-            await completion.Task;
+            await completion.Task.ConfigureAwait(false);
             Assert.AreEqual(task.Result, completion.Completed.Result);
             AssertCompletion.AreEqual(task, completion);
         }

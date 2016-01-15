@@ -12,10 +12,10 @@
 
         public EitherCommandsVm()
         {
-            var isAddingOne = new Condition(this.ObservePropertyChanged(x => x.AddOneCommand.Execution.Status),
-                                            () => AddOneCommand?.Execution?.Status == TaskStatus.Running);
-            var isAddingTwo = new Condition(this.ObservePropertyChanged(x => x.AddTwoCommand.Execution.Status),
-                                            () => AddTwoCommand?.Execution?.Status == TaskStatus.Running);
+            var isAddingOne = new Condition(this.ObservePropertyChanged(x => x.AddOneCommand.IsExecuting),
+                                            () => AddOneCommand?.IsExecuting);
+            var isAddingTwo = new Condition(this.ObservePropertyChanged(x => x.AddTwoCommand.IsExecuting),
+                                            () => AddTwoCommand?.IsExecuting);
 
             var isnotAddingAny = new OrCondition(isAddingOne, isAddingTwo).Negate();
             AddOneCommand = new AsyncCommand(AddOne, isnotAddingAny);

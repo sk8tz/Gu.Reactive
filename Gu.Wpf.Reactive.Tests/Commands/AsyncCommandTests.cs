@@ -48,12 +48,35 @@
         }
 
         [Test]
-        public async Task ExecuteNotifies()
+        public async Task ExecuteNotifiesCanExecuteChanged()
         {
             var count = 0;
             var tcs = new TaskCompletionSource<int>();
             var command = new AsyncCommand(() => tcs.Task);
             command.CanExecuteChanged += (_, __) => count++;
+            var isExecutingCount = 0;
+            command.ObservePropertyChangedSlim(nameof(command.IsExecuting), false)
+                   .Subscribe(_ => isExecutingCount++);
+            Assert.AreEqual(0, isExecutingCount);
+            Assert.IsFalse(command.IsExecuting);
+            Assert.IsFalse(command.CancelCommand.CanExecute());
+            command.Execute();
+            Assert.AreEqual(1, isExecutingCount);
+            Assert.IsTrue(command.IsExecuting);
+            Assert.IsFalse(command.CancelCommand.CanExecute());
+            Assert.AreEqual(1, count);
+            tcs.SetResult(1);
+            await command.Execution.Task.ConfigureAwait(false);
+            Assert.AreEqual(2, isExecutingCount);
+            Assert.IsFalse(command.IsExecuting);
+            Assert.AreEqual(2, count);
+        }
+
+        [Test]
+        public async Task ExecuteNotifiesTaskStatus()
+        {
+            var tcs = new TaskCompletionSource<int>();
+            var command = new AsyncCommand(() => tcs.Task);
             var taskStatuses = new List<TaskStatus>();
             command.ObservePropertyChangedWithValue(x => x.Execution.Status)
                    .Subscribe(x => taskStatuses.Add(x.EventArgs.Value));
@@ -62,15 +85,13 @@
             command.Execute();
             Assert.IsTrue(command.IsExecuting);
             Assert.IsFalse(command.CancelCommand.CanExecute());
-            Assert.AreEqual(1, count);
             var expectedStatuses = new List<TaskStatus> { TaskStatus.Created, TaskStatus.WaitingForActivation, TaskStatus.Running, };
             CollectionAssert.AreEqual(expectedStatuses, taskStatuses);
             tcs.SetResult(1);
-            await command.Execution.Task;
+            await command.Execution.Task.ConfigureAwait(false);
             Assert.IsFalse(command.IsExecuting);
             expectedStatuses.Add(TaskStatus.RanToCompletion);
             CollectionAssert.AreEqual(expectedStatuses, taskStatuses);
-            Assert.AreEqual(2, count);
         }
 
         [Test]
@@ -80,7 +101,7 @@
             var command = new AsyncCommand(() => finished);
             Assert.IsTrue(command.CanExecute());
             command.Execute();
-            await command.Execution.Task;
+            await command.Execution.Task.ConfigureAwait(false);
             Assert.IsTrue(command.CanExecute());
             Assert.AreSame(finished, command.Execution.Task);
             Assert.AreSame(finished, command.Execution.Completed);
@@ -104,7 +125,7 @@
             command.Execute();
             try
             {
-                await command.Execution.Task;
+                await command.Execution.Task.ConfigureAwait(false);
             }
             catch
             {
@@ -123,7 +144,7 @@
             command.Execute();
             Assert.IsFalse(command.CanExecute());
             resetEvent.Set();
-            await command.Execution.Task;
+            await command.Execution.Task.ConfigureAwait(false);
             Assert.IsTrue(command.CanExecute());
         }
     }

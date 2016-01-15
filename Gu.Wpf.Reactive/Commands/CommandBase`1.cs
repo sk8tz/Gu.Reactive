@@ -31,7 +31,7 @@
         public bool IsExecuting
         {
             get { return _isExecuting; }
-            set
+            protected set
             {
                 if (value == _isExecuting) return;
                 _isExecuting = value;
@@ -46,15 +46,7 @@
 
         void ICommand.Execute(object parameter)
         {
-            IsExecuting = true;
-            try
-            {
-                InternalExecute((T)parameter);
-            }
-            finally
-            {
-                IsExecuting = false;
-            }
+            InternalExecute((T)parameter);
         }
 
         /// <summary>
@@ -70,9 +62,23 @@
             }
         }
 
-        protected abstract void InternalExecute(T parameter);
-
         protected abstract bool InternalCanExecute(T parameter);
+
+        /// <summary>
+        /// Note to inheritors:
+        /// This method must signal IsExecuting when starting/stopping
+        /// IsExecuting = true;
+        /// try
+        /// {
+        ///     action(...);
+        /// }
+        /// finally
+        /// {
+        ///     IsExecuting = false;
+        /// }
+        /// </summary>
+        /// <param name="parameter">The command parameter</param>
+        protected abstract void InternalExecute(T parameter);
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
