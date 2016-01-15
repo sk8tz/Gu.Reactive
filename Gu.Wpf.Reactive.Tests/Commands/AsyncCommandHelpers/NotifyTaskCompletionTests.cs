@@ -1,8 +1,7 @@
-﻿namespace Gu.Wpf.Reactive.Tests
+﻿namespace Gu.Wpf.Reactive.Tests.AsyncCommandHelpers
 {
     using System;
     using System.Threading.Tasks;
-
     using NUnit.Framework;
 
     public class NotifyTaskCompletionTests
