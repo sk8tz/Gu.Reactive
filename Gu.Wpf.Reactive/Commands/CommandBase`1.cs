@@ -6,9 +6,12 @@
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
+    using JetBrains.Annotations;
 
-    public abstract class CommandBase<T> : ICommand
+    public abstract class CommandBase<T> : ICommand, INotifyPropertyChanged
     {
+        private bool _isExecuting;
+
         public virtual event EventHandler CanExecuteChanged
         {
             add
@@ -25,18 +28,33 @@
 
         private event EventHandler InternalCanExecuteChanged;
 
-        protected abstract bool InternalCanExecute(T parameter);
-        
+        public bool IsExecuting
+        {
+            get { return _isExecuting; }
+            set
+            {
+                if (value == _isExecuting) return;
+                _isExecuting = value;
+                OnPropertyChanged();
+            }
+        }
+
         bool ICommand.CanExecute(object parameter)
         {
             return InternalCanExecute((T)parameter);
         }
 
-        protected abstract void InternalExecute(T parameter);
-
         void ICommand.Execute(object parameter)
         {
-            InternalExecute((T)parameter);
+            IsExecuting = true;
+            try
+            {
+                InternalExecute((T)parameter);
+            }
+            finally
+            {
+                IsExecuting = false;
+            }
         }
 
         /// <summary>
@@ -48,10 +66,15 @@
             if (handler != null)
             {
                 var scheduler = Schedulers.DispatcherOrCurrentThread;
-                scheduler.Schedule(() => handler(this, new EventArgs()));
+                scheduler.Schedule(() => handler(this, EventArgs.Empty));
             }
         }
 
+        protected abstract void InternalExecute(T parameter);
+
+        protected abstract bool InternalCanExecute(T parameter);
+
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

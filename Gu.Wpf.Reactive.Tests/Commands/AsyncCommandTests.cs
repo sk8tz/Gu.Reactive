@@ -1,6 +1,7 @@
 ﻿namespace Gu.Wpf.Reactive.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Reactive.Linq;
     using System.Reactive.Threading.Tasks;
     using System.Threading;
@@ -47,18 +48,28 @@
         }
 
         [Test]
-        public async Task ExecuteNotifiesCanExecuteChanged()
+        public async Task ExecuteNotifies()
         {
             var count = 0;
             var tcs = new TaskCompletionSource<int>();
             var command = new AsyncCommand(() => tcs.Task);
             command.CanExecuteChanged += (_, __) => count++;
+            var taskStatuses = new List<TaskStatus>();
+            command.ObservePropertyChangedWithValue(x => x.Execution.Status)
+                   .Subscribe(x => taskStatuses.Add(x.EventArgs.Value));
+            Assert.IsFalse(command.IsExecuting);
             Assert.IsFalse(command.CancelCommand.CanExecute());
             command.Execute();
+            Assert.IsTrue(command.IsExecuting);
             Assert.IsFalse(command.CancelCommand.CanExecute());
             Assert.AreEqual(1, count);
+            var expectedStatuses = new List<TaskStatus> { TaskStatus.Created, TaskStatus.WaitingForActivation, TaskStatus.Running, };
+            CollectionAssert.AreEqual(expectedStatuses, taskStatuses);
             tcs.SetResult(1);
             await command.Execution.Task;
+            Assert.IsFalse(command.IsExecuting);
+            expectedStatuses.Add(TaskStatus.RanToCompletion);
+            CollectionAssert.AreEqual(expectedStatuses, taskStatuses);
             Assert.AreEqual(2, count);
         }
 

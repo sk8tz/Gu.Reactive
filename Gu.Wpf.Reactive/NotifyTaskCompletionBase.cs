@@ -73,16 +73,18 @@
         {
             try
             {
-                await task;
+                await task.ConfigureAwait(false);
             }
             // ReSharper disable once EmptyGeneralCatchClause We don't want to propagate errors here. Just make them bindable.
             catch
             {
             }
+
             if (task.Status == TaskStatus.RanToCompletion)
             {
                 OnCompleted();
             }
+
             var handler = PropertyChanged;
             if (handler == null)
             {

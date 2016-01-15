@@ -45,6 +45,7 @@ namespace Gu.Wpf.Reactive
         {
 
         }
+
         private AsyncCommand(ITaskRunner runner, ICondition condition)
             : base(runner.Run, condition)
         {
