@@ -16,3 +16,4 @@ group Test
   nuget Moq
   nuget NUnit
   nuget Microsoft.Reactive.Testing
+  nuget BenchmarkDotNet

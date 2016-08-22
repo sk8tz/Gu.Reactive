@@ -1,0 +1,6 @@
+System.Reactive
+Gu.Wpf.ToolTips
+JetBrains.Annotations
+
+group Test
+  BenchmarkDotNet
