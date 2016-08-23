@@ -9,19 +9,31 @@
 
     public class Diff
     {
-        private const int N = 1000;
+        private static List<Fake> _x;
+        private static List<Fake> _y;
 
-        private static readonly List<Fake> X = Enumerable.Range(0, N)
-                                                         .Select(x => new Fake { Value = x })
-                                                         .ToList();
 
-        private static readonly List<Fake> Y = Enumerable.Range(0, N)
-                                                 .Select(x => new Fake { Value = x })
-                                                 .ToList();
-        [Benchmark]
-        public NotifyCollectionChangedEventArgs CollectionChange1000()
+        [Params(10, 100, 1000)]
+        public int N
         {
-            return Reactive.Diff.CollectionChange(X, Y);
+            set
+            {
+                _x = CreateFakes(value);
+                _y = CreateFakes(value);
+            }
+        }
+
+        [Benchmark]
+        public NotifyCollectionChangedEventArgs CollectionChange()
+        {
+            return Reactive.Diff.CollectionChange(_x, _y);
+        }
+
+        private static List<Fake> CreateFakes(int n)
+        {
+            return Enumerable.Range(0, n)
+                             .Select(x => new Fake { Value = x })
+                             .ToList();
         }
     }
 }
