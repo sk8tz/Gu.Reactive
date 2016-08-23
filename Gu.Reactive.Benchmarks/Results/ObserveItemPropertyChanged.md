@@ -14,6 +14,6 @@ Type=ObserveItemPropertyChanged  Mode=Throughput
 ```
                Method |      Median |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
 --------------------- |------------ |---------- |------- |------ |------ |------------------- |
-            AddSimple |  98.5992 us | 2.2606 us | 100.90 |     - |     - |           6 021,65 |
-            AddNested |  93.5113 us | 1.7252 us |  84.00 | 10.08 |     - |           5 521,96 |
- AddNestedThatUpdates | 149.4769 us | 1.8636 us | 130.00 | 21.00 |     - |           9 071,45 |
+            AddSimple |  99.1673 us | 2.4335 us |  90.93 |     - |     - |           5 932,71 |
+            AddNested |  95.8712 us | 2.3036 us |  71.74 |     - |     - |           5 183,48 |
+ AddNestedThatUpdates | 158.1318 us | 3.0260 us | 106.00 | 17.00 |     - |           8 097,56 |

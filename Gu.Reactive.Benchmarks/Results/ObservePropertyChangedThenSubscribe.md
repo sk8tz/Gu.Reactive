@@ -14,9 +14,9 @@ Type=ObservePropertyChangedThenSubscribe  Mode=Throughput
 ```
                       Method |         Median |      StdDev | Scaled | Scaled-SD | Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
 ---------------------------- |--------------- |------------ |------- |---------- |------ |------ |------ |------------------- |
-    SubscribeToEventStandard |     80.9196 ns |   1.2968 ns |   1.00 |      0.00 |  3.15 |     - |     - |              22,47 |
-                 SimpleLamda | 24,387.5797 ns | 349.1653 ns | 301.05 |      6.25 |     - | 95.91 |     - |             809,81 |
-                SimpleString | 15,049.8603 ns | 370.2551 ns | 186.51 |      5.29 |     - | 57.30 |     - |             603,57 |
-                  SimpleSlim |  4,302.2806 ns | 124.0732 ns |  53.44 |      1.70 |     - | 35.98 |     - |             321,43 |
-                          Rx | 15,442.9407 ns | 725.0235 ns | 190.62 |      9.24 |     - | 59.00 |     - |             592,49 |
- PropertyChangedEventManager |  2,990.7566 ns |  64.0817 ns |  36.78 |      0.95 |  2.57 | 27.28 |     - |             212,68 |
+    SubscribeToEventStandard |     82.3399 ns |   1.9619 ns |   1.00 |      0.00 |  3.28 |     - |     - |              23,40 |
+                 SimpleLamda | 25,434.0464 ns | 923.5807 ns | 309.97 |     13.20 |     - | 98.00 |     - |             827,39 |
+                SimpleString | 15,436.9558 ns | 938.9138 ns | 189.19 |     11.97 |     - | 56.54 |     - |             598,28 |
+                  SimpleSlim |  4,533.3815 ns | 196.0730 ns |  55.19 |      2.66 |     - | 34.96 |     - |             314,29 |
+                          Rx | 14,673.2676 ns | 428.5858 ns | 178.49 |      6.58 |     - | 54.28 |     - |             545,17 |
+ PropertyChangedEventManager |  2,973.1339 ns |  46.2633 ns |  36.09 |      1.01 |  4.81 | 22.37 |     - |             210,58 |

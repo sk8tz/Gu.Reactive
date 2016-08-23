@@ -12,8 +12,8 @@ JitModules=clrjit-v4.6.1076.0
 Type=NameOf  Mode=Throughput  
 
 ```
-             Method |        Median |     StdDev | Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
-------------------- |-------------- |----------- |------- |---------- |------- |------ |------ |------------------- |
- UsingCsharp6Nameof |     0.0008 ns |  0.0391 ns |      ? |         ? |      - |     - |     - |               0,00 |
-           Property | 3,543.8276 ns | 28.8444 ns |      ? |         ? | 107.43 |     - |     - |             210,37 |
-     PropertyNested | 5,843.5959 ns | 74.5650 ns |      ? |         ? | 217.00 |     - |     - |             377,80 |
+             Method |        Median |      StdDev | Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+------------------- |-------------- |------------ |------- |---------- |------- |------ |------ |------------------- |
+ UsingCsharp6Nameof |     0.0025 ns |   0.0362 ns |      ? |         ? |      - |     - |     - |               0,00 |
+           Property | 3,700.0859 ns |  99.4268 ns |      ? |         ? | 106.00 |     - |     - |             217,01 |
+     PropertyNested | 5,460.9793 ns | 124.9741 ns |      ? |         ? | 201.52 |     - |     - |             366,73 |

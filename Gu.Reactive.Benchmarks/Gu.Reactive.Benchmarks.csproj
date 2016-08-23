@@ -59,12 +59,13 @@
   <ItemGroup>
     <Compile Include="Benchmarks\Diff.cs" />
     <Compile Include="Benchmarks\Get.cs" />
+    <Compile Include="Benchmarks\MinTrackerProperty.cs" />
+    <Compile Include="Benchmarks\MinTrackerSimple.cs" />
     <Compile Include="Helpers\Fake.cs" />
     <Compile Include="Helpers\IFake.cs" />
     <Compile Include="Helpers\Level.cs" />
     <Compile Include="Helpers\NotInpc.cs" />
     <Compile Include="MemoryDiagnoserConfig.cs" />
-    <Compile Include="Benchmarks\MinTracker.cs" />
     <Compile Include="Benchmarks\NameOf.cs" />
     <Compile Include="Benchmarks\ObservePropertyChanged.cs" />
     <Compile Include="Benchmarks\ObserveItemPropertyChanged.cs" />
