@@ -12,9 +12,9 @@ JitModules=clrjit-v4.6.1076.0
 Type=ObservePropertyChanged  Mode=Throughput  
 
 ```
-                   Method |        Median |     StdDev | Scaled | Scaled-SD |
-------------------------- |-------------- |----------- |------- |---------- |
- SubscribeToEventStandard |    83.1548 ns | 10.0644 ns |   1.00 |      0.00 |
-             SimpleLambda | 3,971.7910 ns | 31.6953 ns |  44.94 |      4.63 |
-             SimpleString |   357.5139 ns |  1.6268 ns |   4.04 |      0.42 |
-               SimpleSlim |   136.0666 ns |  2.0974 ns |   1.52 |      0.16 |
+                   Method |        Median |      StdDev | Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+------------------------- |-------------- |------------ |------- |---------- |------- |------ |------ |------------------- |
+ SubscribeToEventStandard |    82.4727 ns |   8.1506 ns |   1.00 |      0.00 |  12.54 |     - |     - |              22,87 |
+             SimpleLambda | 3,998.5971 ns | 123.8606 ns |  46.53 |      4.26 | 143.00 |     - |     - |             269,94 |
+             SimpleString |   349.8084 ns |   7.0000 ns |   4.10 |      0.36 |  45.89 |     - |     - |              82,07 |
+               SimpleSlim |   138.5132 ns |   1.9926 ns |   1.61 |      0.14 |  25.25 |     - |     - |              45,13 |

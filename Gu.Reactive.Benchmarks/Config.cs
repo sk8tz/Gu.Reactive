@@ -2,9 +2,9 @@
 {
     using BenchmarkDotNet.Configs;
 
-    public class MemoryDiagnoseConfig : ManualConfig
+    public class Config : ManualConfig
     {
-        public MemoryDiagnoseConfig()
+        public Config()
         {
             this.Add(new BenchmarkDotNet.Diagnostics.Windows.MemoryDiagnoser());
         }

@@ -57,19 +57,19 @@
     </When>
   </Choose>
   <ItemGroup>
-    <Compile Include="Diff.cs" />
-    <Compile Include="Get.cs" />
+    <Compile Include="Benchmarks\Diff.cs" />
+    <Compile Include="Benchmarks\Get.cs" />
     <Compile Include="Helpers\Fake.cs" />
     <Compile Include="Helpers\IFake.cs" />
     <Compile Include="Helpers\Level.cs" />
     <Compile Include="Helpers\NotInpc.cs" />
-    <Compile Include="MemoryDiagnoseConfig.cs" />
-    <Compile Include="MinTracker.cs" />
-    <Compile Include="NameOf.cs" />
-    <Compile Include="ObservePropertyChanged.cs" />
-    <Compile Include="ObserveItemPropertyChanged.cs" />
-    <Compile Include="ObservePropertyChangedThenSubscribe.cs" />
-    <Compile Include="ObservePropertyChangedThenSubscribeThenReact.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Benchmarks\MinTracker.cs" />
+    <Compile Include="Benchmarks\NameOf.cs" />
+    <Compile Include="Benchmarks\ObservePropertyChanged.cs" />
+    <Compile Include="Benchmarks\ObserveItemPropertyChanged.cs" />
+    <Compile Include="Benchmarks\ObservePropertyChangedThenSubscribe.cs" />
+    <Compile Include="Benchmarks\ObservePropertyChangedThenSubscribeThenReact.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\StructLevel.cs" />

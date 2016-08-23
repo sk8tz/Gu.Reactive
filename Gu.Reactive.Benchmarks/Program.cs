@@ -1,8 +1,6 @@
 ﻿namespace Gu.Reactive.Benchmarks
 {
     using System.IO;
-
-    using BenchmarkDotNet.Exporters;
     using BenchmarkDotNet.Running;
 
     public class Program

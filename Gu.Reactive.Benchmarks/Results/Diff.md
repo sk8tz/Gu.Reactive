@@ -12,6 +12,6 @@ JitModules=clrjit-v4.6.1076.0
 Type=Diff  Mode=Throughput  
 
 ```
-               Method |      Median |    StdDev |
---------------------- |------------ |---------- |
- CollectionChange1000 | 126.6916 ns | 1.7001 ns |
+               Method |      Median |    StdDev | Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+--------------------- |------------ |---------- |------ |------ |------ |------------------- |
+ CollectionChange1000 | 125.0227 ns | 2.5691 ns |     - |     - |     - |               0,01 |

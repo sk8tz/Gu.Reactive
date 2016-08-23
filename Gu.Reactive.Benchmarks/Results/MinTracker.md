@@ -12,6 +12,6 @@ JitModules=clrjit-v4.6.1076.0
 Type=MinTracker  Mode=Throughput  
 
 ```
- Method |      Median |    StdDev |
-------- |------------ |---------- |
- Simple | 161.1629 ns | 8.3329 ns |
+ Method |      Median |    StdDev |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+------- |------------ |---------- |------- |------ |------ |------------------- |
+ Simple | 161.1716 ns | 5.3532 ns | 682.00 |     - |     - |              40,17 |

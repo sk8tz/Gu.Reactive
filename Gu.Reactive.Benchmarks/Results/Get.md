@@ -12,11 +12,11 @@ JitModules=clrjit-v4.6.1076.0
 Type=Get  Mode=Throughput  
 
 ```
-             Method |    Median |    StdDev |
-------------------- |---------- |---------- |
-               Func |        NA |        NA |
-     ValueOrDefault | 7.7014 us | 0.3075 us |
- GetValueCachedPath |        NA |        NA |
+             Method |    Median |    StdDev | Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+------------------- |---------- |---------- |------ |------ |------ |------------------- |
+               Func |        NA |        NA |     - |     - |     - |                NaN |
+     ValueOrDefault | 7.9002 us | 0.2194 us |  0.00 |     - |     - |             470,92 |
+ GetValueCachedPath |        NA |        NA |     - |     - |     - |                NaN |
 
 Benchmarks with issues:
   Get_Func

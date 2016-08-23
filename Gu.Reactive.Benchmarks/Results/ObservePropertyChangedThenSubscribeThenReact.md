@@ -12,11 +12,11 @@ JitModules=clrjit-v4.6.1076.0
 Type=ObservePropertyChangedThenSubscribeThenReact  Mode=Throughput  
 
 ```
-                      Method |         Median |        StdDev |   Scaled | Scaled-SD |
----------------------------- |--------------- |-------------- |--------- |---------- |
-    SubscribeToEventStandard |     82.3409 ns |     1.6097 ns |     1.00 |      0.00 |
-                SimpleLambda | 22,221.2563 ns |   633.1684 ns |   267.98 |      9.08 |
-                        Slim |  2,188.2329 ns |    45.8947 ns |    26.64 |      0.74 |
-                      Nested | 90,368.1680 ns | 2,098.6517 ns | 1,101.61 |     32.57 |
-                          Rx | 13,270.8494 ns |   223.2375 ns |   162.04 |      4.07 |
- PropertyChangedEventManager |  3,338.3535 ns |    65.4092 ns |    40.42 |      1.09 |
+                      Method |         Median |        StdDev |   Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
+---------------------------- |--------------- |-------------- |--------- |---------- |------- |------ |------ |------------------- |
+    SubscribeToEventStandard |     84.9811 ns |     1.9196 ns |     1.00 |      0.00 |   0.81 |     - |     - |              22,98 |
+                SimpleLambda | 22,585.6275 ns |   467.6817 ns |   266.96 |      8.09 |  24.88 |  3.99 |     - |             869,52 |
+                        Slim |  2,220.1364 ns |    87.1080 ns |    26.39 |      1.17 |  10.06 |     - |     - |             284,28 |
+                      Nested | 92,700.7056 ns | 2,436.0669 ns | 1,093.67 |     37.40 | 126.00 | 17.00 |     - |           4 363,34 |
+                          Rx | 13,637.4340 ns |   384.1747 ns |   160.86 |      5.73 |  19.89 |  4.79 |     - |             782,90 |
+ PropertyChangedEventManager |  3,514.8374 ns |    54.5860 ns |    41.65 |      1.13 |   1.41 |  8.18 |     - |             295,39 |
