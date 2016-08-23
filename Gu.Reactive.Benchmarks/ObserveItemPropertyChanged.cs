@@ -4,7 +4,7 @@
     using System.Collections.ObjectModel;
     using BenchmarkDotNet.Attributes;
 
-    public class ObserveItemPropertyChangedTests
+    public class ObserveItemPropertyChanged
     {
         [Benchmark]
         public int AddSimple()

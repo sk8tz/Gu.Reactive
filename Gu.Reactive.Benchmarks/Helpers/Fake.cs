@@ -7,7 +7,6 @@
 
     public class Fake : INotifyPropertyChanged, IFake
     {
-        private bool? _isTrueOrNull;
         private bool _isTrue;
         private Level _next;
         private string _name;
@@ -19,24 +18,7 @@
         public event PropertyChangedEventHandler PropertyChanged;
        
         public int WriteOnly { set { return; } }
-
-        public bool? IsTrueOrNull
-        {
-            get
-            {
-                return _isTrueOrNull;
-            }
-            set
-            {
-                if (value.Equals(_isTrueOrNull))
-                {
-                    return;
-                }
-                _isTrueOrNull = value;
-                OnPropertyChanged();
-            }
-        }
-       
+      
         public bool IsTrue
         {
             get

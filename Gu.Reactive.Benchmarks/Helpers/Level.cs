@@ -10,9 +10,6 @@
         private bool _isTrue;
         private Level _next;
         private string _name;
-
-        private bool? _isTrueOrNull;
-
         private int _value;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,23 +27,6 @@
                     return;
                 }
                 _isTrue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool? IsTrueOrNull
-        {
-            get
-            {
-                return _isTrueOrNull;
-            }
-            set
-            {
-                if (Equals(value, _isTrueOrNull))
-                {
-                    return;
-                }
-                _isTrueOrNull = value;
                 OnPropertyChanged();
             }
         }

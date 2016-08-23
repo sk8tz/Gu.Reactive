@@ -6,8 +6,6 @@
     {
         int WriteOnly { set; }
       
-        bool? IsTrueOrNull { get; set; }
-        
         bool IsTrue { get; set; }
         
         string Name { get; set; }

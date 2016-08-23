@@ -52,8 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertRx.cs" />
-    <Compile Include="Benchmarks\DiffTests.cs" />
-    <Compile Include="Benchmarks\MinTrackerTests.cs" />
     <Compile Include="Collections\CollectionSynchronizerTests.cs" />
     <Compile Include="Collections\CrudSource\FilteredMappedView.cs" />
     <Compile Include="Collections\CrudSource\ThrottledView.cs" />
@@ -89,7 +87,6 @@
     <Compile Include="Helpers\FakeWithCollection.cs" />
     <Compile Include="Helpers\IFake.cs" />
     <Compile Include="Get\ValuePathTests.cs" />
-    <Compile Include="Benchmarks\GetTests.cs" />
     <Compile Include="Get\ValueOrDefaultTests.cs" />
     <Compile Include="Helpers\NotInpc.cs" />
     <Compile Include="Helpers\StructLevel.cs" />
@@ -103,7 +100,6 @@
     <Compile Include="Internals\RootItemTests.cs" />
     <Compile Include="Collections\CrudSource\MappingViewTests.cs" />
     <Compile Include="NameOf_\MethodTests.cs" />
-    <Compile Include="Benchmarks\NameOfTests.cs" />
     <Compile Include="NotifyCollectionChangedExt\ObserveCollectionChangedSlimTests.cs" />
     <Compile Include="NotifyCollectionChangedExt\ObserveCollectionChangedTests.cs" />
     <Compile Include="Collections\FixedSizedQueueTests.cs" />
@@ -145,6 +141,9 @@
       <Project>{2230088e-f6dc-4c79-9983-d9654274d689}</Project>
       <Name>Gu.Reactive</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Benchmarks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
