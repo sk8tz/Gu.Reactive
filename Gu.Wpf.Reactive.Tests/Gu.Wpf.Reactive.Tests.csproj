@@ -58,7 +58,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AssertCompletion.cs" />
-    <Compile Include="CollectionViews\BenchmarkTests.cs" />
     <Compile Include="CollectionViews\FilteredViewWpfTests.cs" />
     <Compile Include="MarkupExtensions\Converters\TypeConverters\DefaultTypeConverter`1Tests.cs" />
     <Compile Include="CollectionViews\DispatchingViewTests.cs" />

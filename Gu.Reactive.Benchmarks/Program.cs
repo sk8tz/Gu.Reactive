@@ -10,7 +10,7 @@
     {
         public static void Main()
         {
-            foreach (var summary in RunSingle<NameOf>())
+            foreach (var summary in RunSingle<ThrottledView>())
             {
                 CopyResult(summary.Title);
             }
