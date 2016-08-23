@@ -61,6 +61,7 @@
     <Compile Include="Benchmarks\Get.cs" />
     <Compile Include="Benchmarks\MinTrackerProperty.cs" />
     <Compile Include="Benchmarks\MinTrackerSimple.cs" />
+    <Compile Include="Benchmarks\ObservePropertyChangedReact.cs" />
     <Compile Include="Helpers\Fake.cs" />
     <Compile Include="Helpers\IFake.cs" />
     <Compile Include="Helpers\Level.cs" />

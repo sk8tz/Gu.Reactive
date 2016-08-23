@@ -8,20 +8,14 @@
         public static void Main()
         {
             var switcher = new BenchmarkSwitcher(typeof(Program).Assembly);
-            var summaries = switcher.Run(new[] { "*" });
-            //var summaries = switcher.Run(new[] { "MinTrackerProperty" });
+            //var summaries = switcher.Run(new[] { "*" });
+            var summaries = switcher.Run(new[] { "ObservePropertyChangedReact" });
             foreach (var summary in summaries)
             {
                 CopyResult(summary.Title);
             }
 
             // BenchmarkRunner.Run<ObservePropertyChanged>();
-        }
-
-        private static void Run<T>()
-        {
-            BenchmarkRunner.Run<T>();
-            CopyResult(typeof(T).Name);
         }
 
         private static void CopyResult(string name)
