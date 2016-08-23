@@ -6,7 +6,7 @@ namespace Gu.Reactive.Benchmarks
     public class Get
     {
         private static readonly IValuePath<Get, string> Path = Reactive.Get.ValuePath<Get, string>(x => x.Fake.Next.Name);
-        private static readonly Func<Get, string> Getter = x => x.Fake.Next.Name;
+        private static readonly Func<Get, string> Getter = x => x?.Fake?.Next?.Name;
         public Fake Fake { get; } = new Fake { Next = new Level { Name = "Johan" } };
 
         public Get()
@@ -14,7 +14,7 @@ namespace Gu.Reactive.Benchmarks
             Fake = null;
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public string Func()
         {
             return Getter(this);
@@ -27,9 +27,9 @@ namespace Gu.Reactive.Benchmarks
         }
 
         [Benchmark]
-        public string GetValueCachedPath()
+        public IMaybe<string> GetValueCachedPath()
         {
-            return Path.GetValue(this).Value;
+            return Path.GetValue(this);
         }
     }
 }

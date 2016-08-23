@@ -8,7 +8,7 @@
         public static void Main()
         {
             var switcher = new BenchmarkSwitcher(typeof(Program).Assembly);
-            var summaries = switcher.Run(new[] { "*" });
+            var summaries = switcher.Run(new[] { "Get" });
             foreach (var summary in summaries)
             {
                 CopyResult(summary.Title);

@@ -63,7 +63,7 @@
     <Compile Include="Helpers\IFake.cs" />
     <Compile Include="Helpers\Level.cs" />
     <Compile Include="Helpers\NotInpc.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="MemoryDiagnoserConfig.cs" />
     <Compile Include="Benchmarks\MinTracker.cs" />
     <Compile Include="Benchmarks\NameOf.cs" />
     <Compile Include="Benchmarks\ObservePropertyChanged.cs" />

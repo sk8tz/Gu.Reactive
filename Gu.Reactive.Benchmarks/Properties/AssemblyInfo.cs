@@ -38,4 +38,4 @@ using Gu.Reactive.Benchmarks;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: Config(typeof(Config))]
+[assembly: Config(typeof(MemoryDiagnoserConfig))]
