@@ -50,13 +50,13 @@
             return _fake.ObservePropertyChangedSlim("Value", false);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public IObservable<EventPattern<PropertyChangedEventArgs>> NestedLambda()
         {
             return _fake.ObservePropertyChanged(x => x.Next.Name, false);
         }
 
-        //[Benchmark]
+        [Benchmark]
         public IObservable<EventPattern<PropertyChangedEventArgs>> NestedCachedPath()
         {
             return _fake.ObservePropertyChanged(_propertyPath, false);

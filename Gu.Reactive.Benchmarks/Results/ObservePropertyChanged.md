@@ -14,7 +14,9 @@ Type=ObservePropertyChanged  Mode=Throughput
 ```
                    Method |        Median |      StdDev | Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
 ------------------------- |-------------- |------------ |------- |---------- |------- |------ |------ |------------------- |
- SubscribeToEventStandard |    91.3786 ns |  10.4195 ns |   1.00 |      0.00 |  14.01 |     - |     - |              22,98 |
-             SimpleLambda | 4,077.2601 ns | 106.7068 ns |  44.94 |      5.15 | 159.00 |     - |     - |             269,95 |
-             SimpleString |   370.1997 ns |  17.2364 ns |   4.11 |      0.50 |  50.99 |     - |     - |              82,07 |
-               SimpleSlim |   138.5438 ns |   5.2796 ns |   1.54 |      0.18 |  29.93 |     - |     - |              48,14 |
+ SubscribeToEventStandard |    81.2428 ns |   1.3446 ns |   1.00 |      0.00 |   6.30 |     - |     - |              22,47 |
+             SimpleLambda | 4,155.5151 ns | 125.3290 ns |  51.13 |      1.70 |  74.75 |     - |     - |             276,08 |
+             SimpleString |   366.4313 ns |   9.3352 ns |   4.44 |      0.13 |  26.08 |     - |     - |              91,18 |
+               SimpleSlim |   137.0169 ns |   4.2106 ns |   1.66 |      0.06 |  14.08 |     - |     - |              49,23 |
+             NestedLambda | 6,813.6044 ns | 174.9212 ns |  84.76 |      2.48 | 106.00 |     - |     - |             385,23 |
+         NestedCachedPath |   434.2187 ns |   4.3428 ns |   5.32 |      0.10 |   5.94 |     - |     - |              23,73 |

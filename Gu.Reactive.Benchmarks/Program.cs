@@ -1,21 +1,32 @@
 ﻿namespace Gu.Reactive.Benchmarks
 {
+    using System.Collections.Generic;
     using System.IO;
+
+    using BenchmarkDotNet.Reports;
     using BenchmarkDotNet.Running;
 
     public class Program
     {
         public static void Main()
         {
-            var switcher = new BenchmarkSwitcher(typeof(Program).Assembly);
-            //var summaries = switcher.Run(new[] { "*" });
-            var summaries = switcher.Run(new[] { "ObservePropertyChangedReact" });
-            foreach (var summary in summaries)
+            foreach (var summary in RunSingle<NameOf>())
             {
                 CopyResult(summary.Title);
             }
+        }
 
-            // BenchmarkRunner.Run<ObservePropertyChanged>();
+        private static IEnumerable<Summary> RunAll()
+        {
+            var switcher = new BenchmarkSwitcher(typeof(Program).Assembly);
+            var summaries = switcher.Run(new[] { "*" });
+            return summaries;
+        }
+
+        private static IEnumerable<Summary> RunSingle<T>()
+        {
+            var summaries = new[] { BenchmarkRunner.Run<T>() };
+            return summaries;
         }
 
         private static void CopyResult(string name)

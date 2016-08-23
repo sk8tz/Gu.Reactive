@@ -35,45 +35,62 @@ namespace Gu.Reactive.Benchmarks
         [Benchmark]
         public IDisposable SimpleLamda()
         {
-            return _fake.ObservePropertyChanged(x => x.Value, false).Subscribe(_ => { });
+            using (var disposable = _fake.ObservePropertyChanged(x => x.Value, false)
+                                         .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
         [Benchmark]
         public IDisposable SimpleString()
         {
-            return _fake.ObservePropertyChanged("Value", false).Subscribe(_ => { });
+            using (var disposable = _fake.ObservePropertyChanged("Value", false)
+                                         .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
         [Benchmark]
         public IDisposable SimpleSlim()
         {
-            return _fake.ObservePropertyChangedSlim("Value", false).Subscribe(_ => { });
+            using (var disposable = _fake.ObservePropertyChangedSlim("Value", false)
+                                         .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public IDisposable NestedCachedPath()
         {
-            return _fake.ObservePropertyChanged(_propertyPath, false).Subscribe(_ => { });
+            using (var disposable = _fake.ObservePropertyChanged(_propertyPath, false)
+                                         .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
-        //[Benchmark]
+        [Benchmark]
         public IDisposable NestedLambda()
         {
-            return _fake.ObservePropertyChanged(x => x.Next.Name, false).Subscribe(_ => { });
+            using (var disposable = _fake.ObservePropertyChanged(x => x.Next.Name, false)
+                                         .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
         [Benchmark]
         public IDisposable Rx()
         {
-            return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-                x => _fake.PropertyChanged += x,
-                x => _fake.PropertyChanged -= x)
-                             .Where(
-                                 x =>
-                                 string.IsNullOrEmpty(x.EventArgs.PropertyName) ||
-                                 x.EventArgs.PropertyName == nameof(_fake.Value))
-                             .Subscribe(_ => { });
-
+            using (var disposable = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(x => _fake.PropertyChanged += x, x => _fake.PropertyChanged -= x)
+                                              .Where(x => string.IsNullOrEmpty(x.EventArgs.PropertyName) || x.EventArgs.PropertyName == nameof(_fake.Value))
+                                              .Subscribe(_ => { }))
+            {
+                return disposable;
+            }
         }
 
         [Benchmark]

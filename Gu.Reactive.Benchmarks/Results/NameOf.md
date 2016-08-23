@@ -14,6 +14,6 @@ Type=NameOf  Mode=Throughput
 ```
              Method |        Median |      StdDev | Scaled | Scaled-SD |  Gen 0 | Gen 1 | Gen 2 | Bytes Allocated/Op |
 ------------------- |-------------- |------------ |------- |---------- |------- |------ |------ |------------------- |
- UsingCsharp6Nameof |     0.0025 ns |   0.0362 ns |      ? |         ? |      - |     - |     - |               0,00 |
-           Property | 3,700.0859 ns |  99.4268 ns |      ? |         ? | 106.00 |     - |     - |             217,01 |
-     PropertyNested | 5,460.9793 ns | 124.9741 ns |      ? |         ? | 201.52 |     - |     - |             366,73 |
+ UsingCsharp6Nameof |     0.0014 ns |   0.0305 ns |      ? |         ? |      - |     - |     - |               0,00 |
+           Property | 3,640.7350 ns | 334.2726 ns |      ? |         ? | 106.00 |     - |     - |             221,94 |
+     PropertyNested | 5,529.0548 ns |  81.9919 ns |      ? |         ? | 190.67 |     - |     - |             355,13 |
