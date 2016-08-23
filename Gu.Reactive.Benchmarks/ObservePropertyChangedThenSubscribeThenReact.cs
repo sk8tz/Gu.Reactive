@@ -66,7 +66,7 @@ namespace Gu.Reactive.Benchmarks
             }
         }
 
-        [Benchmark]
+        //[Benchmark]
         public int NestedCachedPath()
         {
             int count = 0;

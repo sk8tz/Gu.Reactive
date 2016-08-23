@@ -30,14 +30,14 @@
             return _valueTracker.Value;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public int? Property()
         {
             _propertyFakes.Add(new Fake { Value = 5 });
             return _propertyTracker.Value;
         }
 
-        [Benchmark]
+        //[Benchmark]
         public int? WhenTrackingChanges()
         {
             _propertyChangeFakes.Add(new Fake { Value = 5 });

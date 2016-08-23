@@ -5,3 +5,4 @@ JetBrains.Annotations
 group Test
   System.Reflection.Metadata
   BenchmarkDotNet
+  BenchmarkDotNet.Diagnostics.Windows

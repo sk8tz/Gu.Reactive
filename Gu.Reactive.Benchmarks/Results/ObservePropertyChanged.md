@@ -14,9 +14,7 @@ Type=ObservePropertyChanged  Mode=Throughput
 ```
                    Method |        Median |     StdDev | Scaled | Scaled-SD |
 ------------------------- |-------------- |----------- |------- |---------- |
- SubscribeToEventStandard |    81.1682 ns |  0.9271 ns |   1.00 |      0.00 |
-             SimpleLambda | 4,040.3026 ns | 52.9850 ns |  49.70 |      0.84 |
-             SimpleString |   358.4087 ns |  0.9459 ns |   4.41 |      0.05 |
-               SimpleSlim |   136.0643 ns |  0.7336 ns |   1.68 |      0.02 |
-             NestedLambda | 6,896.5336 ns | 48.0776 ns |  84.70 |      1.10 |
-         NestedCachedPath |   408.7631 ns |  4.2130 ns |   5.07 |      0.08 |
+ SubscribeToEventStandard |    83.1548 ns | 10.0644 ns |   1.00 |      0.00 |
+             SimpleLambda | 3,971.7910 ns | 31.6953 ns |  44.94 |      4.63 |
+             SimpleString |   357.5139 ns |  1.6268 ns |   4.04 |      0.42 |
+               SimpleSlim |   136.0666 ns |  2.0974 ns |   1.52 |      0.16 |

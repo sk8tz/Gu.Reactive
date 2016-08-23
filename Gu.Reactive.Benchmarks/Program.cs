@@ -9,31 +9,31 @@
     {
         public static void Main()
         {
-            Run<ObservePropertyChanged>();
-            //BenchmarkRunner.Run<MinTracker>();
+            var switcher = new BenchmarkSwitcher(typeof(Program).Assembly);
+            var summaries = switcher.Run(new[] { "*" });
+            foreach (var summary in summaries)
+            {
+                CopyResult(summary.Title);
+            }
 
-
-            //BenchmarkRunner.Run<ObservePropertyChangedThenSubscribe>();
-            //BenchmarkRunner.Run<ObservePropertyChangedThenSubscribeThenReact>();
-            //BenchmarkRunner.Run<ObserveItemPropertyChanged>();
+            // BenchmarkRunner.Run<ObservePropertyChanged>();
         }
 
         private static void Run<T>()
         {
-            BenchmarkRunner.Run<ObservePropertyChanged>();
-            CopyResult<T>();
+            BenchmarkRunner.Run<T>();
+            CopyResult(typeof(T).Name);
         }
 
-        private static void CopyResult<T>()
+        private static void CopyResult(string name)
         {
 #if DEBUG
 #else
-
-            var sourceFileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "BenchmarkDotNet.Artifacts", "results", typeof(T).Name + "-report-github.md");
+            var sourceFileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "BenchmarkDotNet.Artifacts", "results", name + "-report-github.md");
             var destinationDirectory = System.IO.Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).Parent.Parent.FullName, "Results");
             System.IO.Directory.CreateDirectory(destinationDirectory);
-            var destinationFileName = System.IO.Path.Combine(destinationDirectory, typeof(T).Name + ".md");
-            File.Copy(sourceFileName, destinationFileName);
+            var destinationFileName = System.IO.Path.Combine(destinationDirectory, name + ".md");
+            File.Copy(sourceFileName, destinationFileName, true);
 #endif
         }
     }

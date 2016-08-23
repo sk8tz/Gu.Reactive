@@ -35,31 +35,36 @@ namespace Gu.Reactive.Benchmarks
         [Benchmark]
         public IDisposable SimpleLamda()
         {
-            return _fake.ObservePropertyChanged(x => x.Value, false).Subscribe(x => { });
+            return _fake.ObservePropertyChanged(x => x.Value, false).Subscribe(_ => { });
         }
 
         [Benchmark]
         public IDisposable SimpleString()
         {
-            return _fake.ObservePropertyChanged("Value", false).Subscribe(x => { });
+            return _fake.ObservePropertyChanged("Value", false).Subscribe(_ => { });
         }
 
         [Benchmark]
         public IDisposable SimpleSlim()
         {
-            return _fake.ObservePropertyChangedSlim("Value", false).Subscribe(x => { });
+            return _fake.ObservePropertyChangedSlim("Value", false).Subscribe(_ => { });
         }
 
-        [Benchmark]
+        //[Benchmark]
         public IDisposable NestedCachedPath()
         {
-            return _fake.ObservePropertyChanged(_propertyPath, false).Subscribe(x => { });
+            return _fake.ObservePropertyChanged(_propertyPath, false).Subscribe(_ => { });
+        }
+
+        //[Benchmark]
+        public IDisposable NestedLambda()
+        {
+            return _fake.ObservePropertyChanged(x => x.Next.Name, false).Subscribe(_ => { });
         }
 
         [Benchmark]
         public IDisposable Rx()
         {
-            int count = 0;
             return Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 x => _fake.PropertyChanged += x,
                 x => _fake.PropertyChanged -= x)
@@ -67,19 +72,17 @@ namespace Gu.Reactive.Benchmarks
                                  x =>
                                  string.IsNullOrEmpty(x.EventArgs.PropertyName) ||
                                  x.EventArgs.PropertyName == nameof(_fake.Value))
-                             .Subscribe(x => count++);
+                             .Subscribe(_ => { });
 
         }
 
         [Benchmark]
-        public int PropertyChangedEventManager()
+        public EventHandler<PropertyChangedEventArgs> PropertyChangedEventManager()
         {
-            int count = 0;
-            EventHandler<PropertyChangedEventArgs> handler = (sender, args) => count++;
+            EventHandler<PropertyChangedEventArgs> handler = (sender, args) => {};
             System.ComponentModel.PropertyChangedEventManager.AddHandler(_fake, handler, nameof(_fake.Value));
-            _fake.Value++;
             System.ComponentModel.PropertyChangedEventManager.RemoveHandler(_fake, handler, nameof(_fake.Value));
-            return count;
+            return handler;
         }
     }
 }
